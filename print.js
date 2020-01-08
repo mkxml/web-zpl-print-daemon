@@ -9,23 +9,20 @@ async function getPrinterStatus() {
     },
   });
   const json = await response.json();
-  const status = JSON.parse(json);
-  return status;
+  return json;
 }
 
 async function print() {
   label.innerText = 'Printing...';
   const textarea = document.getElementById('zpldata');
-  const encoder = new TextEncoder();
   const text = textarea.value;
-  const data = encoder.encode(text);
   await fetch('https://localhost:9222/print', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ zpl: data })
+    body: JSON.stringify({ zpl: text })
   });
   label.innerText = 'Check the printer!';
 }
@@ -47,6 +44,7 @@ async function connectPrinter() {
     if (healthy) {
       const printer = document.getElementById('printer');
       printer.innerText = `Printer: ${printerName}`;
+      label.innerText = '';
       hideConnectButton();
     } else {
       label.innerText = 'Printer not available';
